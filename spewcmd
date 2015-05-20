@@ -1,0 +1,48 @@
+#! /bin/sh
+#
+# spewcmd: launch one of those GUI programs that spew trash to the terminal
+#
+# This script automates the process of quieting those evil spewhappy
+# GTK/Qt/FreeDesktop/whatervergarbage programs, so one can be launched
+# from the terminal without rendering it useless for all other tasks.
+# Typical usage is something like:
+#
+#	spewcmd <command> <options...>
+#
+# where <options...> will be passed as <command>'s arguments. If
+# spewcmd itself ever grows options, they will only occur *before*
+# <command> is specified.
+#
+# This will cause stdout and stderr from <command> to go to
+# /tmp/<command>.spew; <command> will be backgrounded automatically.
+# If /tmp/<command>.spew already exists, the form /tmp/<command>.n.spew
+# is used, where n begins as '1' and is incremented until we get a file
+# that doesn't exist yet.
+
+ALLARGS="$@"
+CMDLINE="${ALLARGS##$0}"
+CMD="$1"
+N=1
+
+if [ "$CMD" ]
+then
+	if [ ! -f /tmp/"$CMD".spew ]
+	then
+		SPEWFILE=/tmp/"$CMD".spew
+	else
+		while [ -f /tmp/"$CMD".$N.spew ]
+		do
+			echo $N
+			N=$(($N + 1))
+		done
+		echo foo
+		SPEWFILE=/tmp/"$CMD".$N.spew
+	fi
+
+	exec "$CMDLINE" > "$SPEWFILE" 2>&1  &
+	echo "executed $CMDLINE"
+	echo "spew in $SPEWFILE"
+
+else	
+	echo "$0: please specify a command, airhead"
+fi
