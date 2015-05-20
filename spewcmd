@@ -35,14 +35,13 @@ then
 			echo $N
 			N=$(($N + 1))
 		done
-		echo foo
 		SPEWFILE=/tmp/"$CMD".$N.spew
 	fi
 
-	exec "$CMDLINE" > "$SPEWFILE" 2>&1  &
+	exec $CMDLINE > "$SPEWFILE" 2>&1  &
 	echo "executed $CMDLINE"
 	echo "spew in $SPEWFILE"
 
 else	
-	echo "$0: please specify a command, airhead"
+	echo "$0: please specify a command"
 fi
