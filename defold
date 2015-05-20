@@ -1,0 +1,50 @@
+#! /bin/sh
+
+# envvar THRESH
+#
+# The average line length in characters at which we start debreaking lines.
+# Not all files are alike, yours may need downward revision.
+THRESH=${THRESH:-"60"}
+
+# envvar EOL
+#
+# Internal end-of-line marker, pick a string your file won't have
+EOL="##!!EOL!!##"
+
+# real endline
+ENDL="
+"
+
+# paragraph control
+PARA=""
+NUMLINES=$((1))  #
+CHARCOUNT=$((0)) # accumulators
+
+while IFS= read -r LINE
+do
+	if [ -z "$LINE" ]
+	then
+		# Output as one line if its average line length indicates a
+		# real paragraph
+		if [ $(($CHARCOUNT / $NUMLINES)) -gt $THRESH ]
+		then
+			printf "%s\n\n"\
+				"$(printf "%s" "$PARA" | sed "s|$EOL| |g")"
+		else
+			# Output as multiple lines otherwise
+			env IFS=$ENDL printf "%s\n\n"\
+				"$(printf "%s" "$PARA" | sed "s|$EOL|\\$ENDL|g")"
+		fi
+
+		# "Eject" the paragraph
+		PARA=
+		NUMLINES=$((1))
+		CHARCOUNT=$((0))
+	else
+		PARA="${PARA}${LINE}${EOL}"
+
+		# accumulate
+		NUMLINES=$(( $NUMLINES + 1))
+		CHARCOUNT=$(( $CHARCOUNT + $(printf "%s" "$LINE" | wc -c) ))
+	fi
+done
