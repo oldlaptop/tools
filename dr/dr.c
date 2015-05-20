@@ -96,8 +96,12 @@ int main (int argc, char **argv)
 		return -1;
 	}
 
-	dval = ndice * (arc4random_uniform (dsize) + 1);
-		
+	while (ndice > 0)
+	{
+		dval += arc4random_uniform (dsize) + 1;
+		ndice--;
+	}
+
 	printf ("%u\n", dval);
 	return dval;
 }
