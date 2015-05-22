@@ -53,6 +53,12 @@ int main (int argc, char **argv)
 		return -1;
 	}
 
+	/*
+	 * We want to split argv[1] on the 'd', we will do this by finding it
+	 * and changing it to '\0', the final contents of argv[1] will be
+	 * something like "2\06\0" or so (for 2d6), with dsize_str pointing at
+	 * the character immediately after the first '\0'.
+	 */
 	ndice_str = argv[1];
 	dsize_str = argv[1];
 	while (*ndice_str != '\0')
@@ -68,6 +74,11 @@ int main (int argc, char **argv)
 
 	if (strlen (ndice_str) == 0)
 	{
+		/*
+		 * It is possible we were passed something without the first
+		 * number; in this case argv[1] will now look like "\0d6" (for
+		 * d6), and we will replace the missing number with 1.
+		 */
 		ndice = 1;
 	}
 	else
@@ -77,6 +88,10 @@ int main (int argc, char **argv)
 
 	if (strlen (dsize_str) == 0)
 	{
+		/*
+		 * On the other hand, if the second number was left off, we do
+		 * not have a valid dice specification at all.
+		 */
 		printf ("%s: no dsize\n", argv[0]);
 		return -1;
 	}
@@ -85,6 +100,10 @@ int main (int argc, char **argv)
 		dsize = strtonum (dsize_str, 1, max, &dsize_err);
 	}
 
+	/*
+	 * strtonum(3) has done the remainder of our error checking for us, it
+	 * only remains to use the results.
+	 */
 	if (ndice_err != NULL && *ndice_err != '\0')
 	{
 		printf ("%s: bad ndice: %s\n", argv[0], ndice_err);
@@ -95,6 +114,10 @@ int main (int argc, char **argv)
 		printf ("%s: bad dsize: %s\n", argv[0], dsize_err);
 		return -1;
 	}
+
+	/*
+	 * Roll the die/dice, print the final value, and return it.
+	 */
 
 	while (ndice > 0)
 	{
