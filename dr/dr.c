@@ -31,6 +31,7 @@
  * arc4random_uniform and strtonum, not included here.
  */
 
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
