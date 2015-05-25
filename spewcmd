@@ -40,28 +40,29 @@
 # /tmp/<command>.spew; <command> will be backgrounded automatically.
 # If /tmp/<command>.spew already exists, the form /tmp/<command>.n.spew
 # is used, where n begins as '1' and is incremented until we get a file
-# that doesn't exist yet.
+# that doesn't exist yet. If <command> is an absolute or relative path, only the
+# last component will be used in the temporary file's name.
 
 ALLARGS="$@"
 CMDLINE="${ALLARGS##$0}"
 CMD="$1"
+CMDNAME="${CMD##*/}"
 N=1
 
 if [ "$CMD" ]
 then
-	if [ ! -f /tmp/"$CMD".spew ]
+	if [ ! -f /tmp/"$CMDNAME".spew ]
 	then
-		SPEWFILE=/tmp/"$CMD".spew
+		SPEWFILE=/tmp/"$CMDNAME".spew
 	else
-		while [ -f /tmp/"$CMD".$N.spew ]
+		while [ -f /tmp/"$CMDNAME".$N.spew ]
 		do
-			echo $N
 			N=$(($N + 1))
 		done
-		SPEWFILE=/tmp/"$CMD".$N.spew
+		SPEWFILE=/tmp/"$CMDNAME".$N.spew
 	fi
 
-	exec $CMDLINE > "$SPEWFILE" 2>&1  &
+	$CMDLINE > "$SPEWFILE" 2>&1  &
 	echo "executed $CMDLINE"
 	echo "spew in $SPEWFILE"
 
