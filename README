@@ -13,3 +13,5 @@ dr:      Roll an arbitrary number of dice of an arbitrary size, using xdy
 
 defold:  Meant to be the inverse of fold(1), but doesn't really work as yet;
          written in (rather embarrasing) POSIX sh.
+
+phrase:  A random passphrase generator using dr, itself written in POSIX sh.
