@@ -77,7 +77,7 @@ int main (int argc, char **argv)
 	{
 		/*
 		 * It is possible we were passed something without the first
-		 * number; in this case argv[1] will now look like "\0d6" (for
+		 * number; in this case argv[1] will now look like "\06" (for
 		 * d6), and we will replace the missing number with 1.
 		 */
 		ndice = 1;
