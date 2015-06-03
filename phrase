@@ -1,0 +1,54 @@
+#! /bin/sh
+#
+# Copyright (c) 2015, Peter Piwowarski
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer. 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# phrase: generate a random passphrase
+#
+# This script will randomly choose words from a dictionary file (by default
+# /usr/share/dict/words, but you can use a different one) for the  purpose of
+# making a really random passphrase. By default, eight words are generated; you
+# may want more or less depending on your memory or paranoia levels. For now
+# configuration of dictionary files and passphrase length should happen via
+# environment variables, commandline parameters may be added in the future.
+# Requires my dr utility in $PATH for random number generation.
+
+# envvars:
+# NUM_WORDS: the number of words in the generated phrase; default 8
+# WORD_FILE: a file containing words to choose from randomly, one per line,
+#            default /usr/share/dict/words
+NUM_WORDS=${NUM_WORDS:-"8"}
+WORD_FILE=${WORD_FILE:-"/usr/share/dict/words"}
+
+PASSPHRASE=""
+
+WORD_FILE_LENGTH="$(wc -l < $WORD_FILE)"
+
+while [ $NUM_WORDS -gt 0 ]
+do
+	WORD_NUM=$(dr "d$WORD_FILE_LENGTH")
+	PASSPHRASE="$PASSPHRASE $(head -n"$WORD_NUM" "$WORD_FILE" | tail -n1)"
+	NUM_WORDS=$(( $NUM_WORDS - 1 ))
+done
+
+echo $PASSPHRASE
