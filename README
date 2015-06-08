@@ -8,8 +8,8 @@ spewcmd: Launch a command in the background with all output redirected to a file
 
 dr:      Roll an arbitrary number of dice of an arbitrary size, using xdy
          notation (2d6, for instance). Written in C99 with two OpenBSD functions
-         (strtonum(3) and, more importantly, arc4random_unifom(3), both of which
-         are in libbsd as of version 0.2.0).
+         (strtonum(3) and, more importantly, arc4random_uniform(3), both of
+         which are in libbsd as of version 0.2.0).
 
 defold:  Meant to be the inverse of fold(1), but doesn't really work as yet;
          written in (rather embarrasing) POSIX sh.
