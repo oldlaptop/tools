@@ -43,6 +43,12 @@
 # that doesn't exist yet. If <command> is an absolute or relative path, only the
 # last component will be used in the temporary file's name.
 
+# envvar PREFIX
+#
+# Prefix for the spewfile's path; defaults to /tmp. Override with env(1) or
+# similar if desired, your value will have a / appended.
+PREFIX="${PREFIX:-"/tmp"}/"
+
 ALLARGS="$@"
 CMDLINE="${ALLARGS##$0}"
 CMD="$1"
@@ -51,15 +57,15 @@ N=1
 
 if [ "$CMD" ]
 then
-	if [ ! -f /tmp/"$CMDNAME".spew ]
+	if [ ! -f $PREFIX"$CMDNAME".spew ]
 	then
-		SPEWFILE=/tmp/"$CMDNAME".spew
+		SPEWFILE=$PREFIX"$CMDNAME".spew
 	else
-		while [ -f /tmp/"$CMDNAME".$N.spew ]
+		while [ -f $PREFIX"$CMDNAME".$N.spew ]
 		do
 			N=$(($N + 1))
 		done
-		SPEWFILE=/tmp/"$CMDNAME".$N.spew
+		SPEWFILE=$PREFIX"$CMDNAME".$N.spew
 	fi
 
 	$CMDLINE > "$SPEWFILE" 2>&1  &
