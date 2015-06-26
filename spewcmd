@@ -49,8 +49,6 @@
 # similar if desired, your value will have a / appended.
 PREFIX="${PREFIX:-"/tmp"}/"
 
-ALLARGS="$@"
-CMDLINE="${ALLARGS##$0}"
 CMD="$1"
 CMDNAME="${CMD##*/}"
 N=1
@@ -68,8 +66,8 @@ then
 		SPEWFILE=$PREFIX"$CMDNAME".$N.spew
 	fi
 
-	$CMDLINE > "$SPEWFILE" 2>&1  &
-	echo "executed $CMDLINE"
+	exec "$@" > "$SPEWFILE" 2>&1  &
+	echo "executed $@"
 	echo "spew in $SPEWFILE"
 
 else	
