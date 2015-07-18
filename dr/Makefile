@@ -3,7 +3,7 @@ default: dr
 clean:
 	rm dr
 
-test:
+test: dr
 	@echo "testing random distribution for d10; all values should be close to 100"
 	sh ./test.sh
 
