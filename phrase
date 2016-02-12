@@ -42,13 +42,13 @@ WORD_FILE=${WORD_FILE:-"/usr/share/dict/words"}
 
 PASSPHRASE=""
 
-WORD_FILE_LENGTH="$(wc -l < $WORD_FILE)"
+WORD_FILE_LENGTH=$(wc -l < "$WORD_FILE")
 
-while [ $NUM_WORDS -gt 0 ]
+while [ "$NUM_WORDS" -gt 0 ]
 do
 	WORD_NUM=$(dr "d$WORD_FILE_LENGTH")
 	PASSPHRASE="$PASSPHRASE $(head -n"$WORD_NUM" "$WORD_FILE" | tail -n1)"
 	NUM_WORDS=$(( $NUM_WORDS - 1 ))
 done
 
-echo $PASSPHRASE
+echo "$PASSPHRASE"

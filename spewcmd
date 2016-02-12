@@ -55,11 +55,11 @@ N=1
 
 if [ "$CMD" ]
 then
-	if [ ! -f $PREFIX"$CMDNAME".spew ]
+	if [ ! -f "$PREFIX$CMDNAME".spew ]
 	then
-		SPEWFILE=$PREFIX"$CMDNAME".spew
+		SPEWFILE="$PREFIX$CMDNAME".spew
 	else
-		while [ -f $PREFIX"$CMDNAME".$N.spew ]
+		while [ -f "$PREFIX$CMDNAME".$N.spew ]
 		do
 			N=$(($N + 1))
 		done
@@ -67,7 +67,7 @@ then
 	fi
 
 	exec "$@" > "$SPEWFILE" 2>&1  &
-	echo "executed $@"
+	echo "executed" "$@"
 	echo "spew in $SPEWFILE"
 
 else	

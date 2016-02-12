@@ -49,7 +49,7 @@ do
 	then
 		# Output as one line if its average line length indicates a
 		# real paragraph
-		if [ $(($CHARCOUNT / $NUMLINES)) -gt $THRESH ]
+		if [ $(($CHARCOUNT / $NUMLINES)) -gt "$THRESH" ]
 		then
 			printf "%s\n\n"\
 				"$(printf "%s" "$PARA" | sed "s|$EOL| |g")"
