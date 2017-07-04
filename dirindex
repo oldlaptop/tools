@@ -1,0 +1,17 @@
+#! /bin/sh
+
+# usage: dirindex [dir]
+#
+# Writes a sorted index of directories under dir to standard output, with each
+# directory listed relative to dir. Useful for comparing two directory trees;
+# for example, one containing FLAC music files, one directory per album, and
+# another containing Vorbis versions in the same structure.
+
+_ROOT=$1
+# Strip any trailing /
+_ROOT=${_ROOT%%/}
+
+# Strip any absolute path
+_NAME="${_ROOT##*/}"
+
+find "${_ROOT}" -type d | sed "s|.*${_ROOT}|${_NAME}|" | sort

@@ -2,16 +2,19 @@ This repository contains some small, useful programs and scripts (typically one
 file) which scratch an itch for me; they're here in the hopes that they'll
 scratch an itch for you too. Currently you will find:
 
-spewcmd: Launch a command in the background with all output redirected to a file
-         in /tmp, intended for launching GUI programs that like to spam your
-         terminal; written in POSIX sh
+spewcmd:  Launch a command in the background with all output redirected to a file
+          in /tmp, intended for launching GUI programs that like to spam your
+          terminal; written in POSIX sh
 
-dr:      Roll an arbitrary number of dice of an arbitrary size, using xdy
-         notation (2d6, for instance). Written in C99 with two OpenBSD functions
-         (strtonum(3) and, more importantly, arc4random_uniform(3), both of
-         which are in libbsd as of version 0.2.0).
+dirindex: Write an index of directories under some path, relative to its end, to
+          stdout; almost a POSIX sh one-liner.
 
-defold:  Meant to be the inverse of fold(1), but doesn't really work as yet;
-         written in (rather embarrasing) POSIX sh.
+dr:       Roll an arbitrary number of dice of an arbitrary size, using xdy
+          notation (2d6, for instance). Written in C99 with two OpenBSD functions
+          (strtonum(3) and, more importantly, arc4random_uniform(3), both of
+          which are in libbsd as of version 0.2.0).
 
-phrase:  A random passphrase generator using dr, itself written in POSIX sh.
+defold:   Meant to be the inverse of fold(1), but doesn't really work as yet;
+          written in (rather embarrasing) POSIX sh.
+
+phrase:   A random passphrase generator using dr, itself written in POSIX sh.
