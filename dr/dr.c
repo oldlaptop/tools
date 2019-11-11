@@ -31,7 +31,7 @@
  * arc4random_uniform and strtonum, not included here.
  */
 
-#include <inttypes.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -42,11 +42,9 @@ int main (int argc, char **argv)
 	char *dsize_str = NULL;
 	const char *ndice_err = NULL;
 	const char *dsize_err = NULL;
-	uint32_t ndice = 0;
-	uint32_t dsize = 0;
-	uint32_t dval = 0;
-
-	uint32_t max = ~(0);
+	unsigned int ndice = 0;
+	unsigned int dsize = 0;
+	unsigned int dval = 0;
 
 	if (argc != 2)
 	{
@@ -84,7 +82,7 @@ int main (int argc, char **argv)
 	}
 	else
 	{
-		ndice = strtonum (ndice_str, 1, max, &ndice_err);
+		ndice = strtonum (ndice_str, 1, UINT_MAX, &ndice_err);
 	}
 
 	if (strlen (dsize_str) == 0)
@@ -98,7 +96,7 @@ int main (int argc, char **argv)
 	}
 	else
 	{
-		dsize = strtonum (dsize_str, 1, max, &dsize_err);
+		dsize = strtonum (dsize_str, 1, UINT_MAX, &dsize_err);
 	}
 
 	/*
