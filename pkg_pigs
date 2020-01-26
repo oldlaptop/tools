@@ -1,0 +1,102 @@
+#! /bin/sh
+#
+# Copyright (c) 2015, Peter Piwowarski
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer. 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# pkg_pigs: show which packages are using up the most disk space
+#
+# This tool fetches and prints pkg_info(1)'s estimates size for each installed
+# package, sorted in descending order by size, scaled according to a specified
+# unit. By default it prints sizes in MB (SI-prefixed), to four decimal places'
+# precision, and trims output to fit the terminal; all parameters are controlled
+# by the environment variables below.
+
+UNIT="${UNIT:-M}" # K/M/G/KiB/MiB/GiB
+PRECISION="${PRECISION:-4}" # precision (k) for dc
+LLENGTH="${LLENGTH:-45}" # total length of each output line
+FLOOR="${FLOOR:-0}" # only packages larger than $FLOOR$UNIT are shown
+PROGRESS="${PROGRESS:-true}" # set to false to disable progress display
+NLINES="${NLINES:-24}" # set to 0 to disable trimming
+
+endl='
+'
+
+case "$UNIT" in
+	K)
+		factor=1000
+		;;
+	M)	factor=1000000
+		;;
+	G)
+		factor=1000000000
+		;;
+	KiB)
+		factor=1024
+		;;
+	MiB)
+		factor=1048576
+		;;
+	GiB)
+		factor=1073741824
+		;;
+	default)
+		printf '%s\n' "illegal unit $UNIT"
+esac
+
+chead() {
+	if [ "$NLINES" -gt 0 ]
+	then
+		head -n"$NLINES"
+	else
+		cat
+	fi
+}
+
+pkgs="$(pkg_info -q)"
+records=""
+
+for pkg in $pkgs
+do
+	if "$PROGRESS"
+	then
+		printf "%-${LLENGTH}s\\r" "$pkg"
+	fi
+
+	size="$(pkg_info -sq "$pkg")"
+	ssize="$(dc -e "${PRECISION}k $size $factor / p")"
+	sfloor="$((FLOOR * factor))"
+
+	if [ "$size" -ge "$sfloor" ]
+	then
+		nlen="$(printf %s "$pkg" | wc -c)"
+		record="$(printf "%s %$((LLENGTH - nlen))s" "$pkg" "${ssize}${UNIT}")"
+		records="${records}${endl}${size}@@@${record}"
+	fi
+done
+
+n=0
+printf "%s" "${records%%$endl}" | sort -rn | while read -r line && ( [ $n -lt $NLINES ] || [ $NLINES -eq 0 ] )
+do
+	n=$((n + 1))
+	printf '%d%s\n' $n "${line##*@@@}"
+done

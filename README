@@ -18,3 +18,7 @@ defold:   Meant to be the inverse of fold(1), but doesn't really work as yet;
           written in (rather embarrasing) POSIX sh.
 
 phrase:   A random passphrase generator using dr, itself written in POSIX sh.
+
+pkg_pigs: Rough equivalent to dpigs[0] for the OpenBSD package system, written
+          in POSIX sh (calling out to pkg_info(1) for package data and dc(1) for
+          math).
